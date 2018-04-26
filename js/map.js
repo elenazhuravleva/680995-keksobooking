@@ -46,8 +46,6 @@ var photosArray = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
 var locationX = [300, 900];
 var locationY = [150, 500];
 
-var nearestOffers = [];
-
 var getRandom = function (min, max) {
   var rand = Math.floor(Math.random() * (max - min + 1) + min);
   return rand;
@@ -73,7 +71,7 @@ var getArrayRandomLength = function (array) {
 //Заполнение массива объектов
 var createData = function () {
   var titleElement = getArrayNoDuplicate(titleArray);
-
+  var nearestOffers = [];
   for (var i = 0; i < advertArrayLength; i++) {
     var positionX = getRandom(locationX[0],locationX[1]);
     var positionY = getRandom(locationY[0], locationY[1]);
@@ -101,6 +99,7 @@ var createData = function () {
     };
 
   };
+  return nearestOffers;
 };
 
 //создание DOM-элементов, соответствующих меткам на карте
@@ -199,6 +198,5 @@ var createCard = function (offersArray) {
 };
 
 mapMode.classList.remove('map--faded');
-createData();
-createMapPins(mapPinsBlock,nearestOffers);
-createCard(nearestOffers.slice(0, 1));
+createMapPins(mapPinsBlock,createData());
+createCard(createData().slice(0, 1));
