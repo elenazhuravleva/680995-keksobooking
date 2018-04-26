@@ -57,7 +57,7 @@ var getArrayNoDuplicate = function (array) {
   var newArray = array.slice(0,array.length);
   var k = 0;
   var temp = 0;
-  for (var i = newArray.length -1; i > 0 ; i--) { //i = 0; i < newArray.length -1; i++
+  for (var i = newArray.length -1; i > 0 ; i--) {
     k = Math.floor(Math.random()*(i+1));
     temp = newArray[i];
     newArray[i] = newArray[k];
@@ -99,7 +99,7 @@ var createData = function () {
         'y': positionY
       }
     };
- // console.log(nearestOffers[i]);
+
   };
 };
 
@@ -110,8 +110,8 @@ var createMarker = function (offer) {
   mapPinElement.style.left = offer.location.x - image.width / 2 + 'px';
   mapPinElement.style.top = offer.location.y - image.height + 'px';
   image.src = offer.author.avatar;
-  image.alt = offer.title; //?
-  //console.log(image.src);
+  image.alt = offer.title;
+
   return mapPinElement;
 };
 
