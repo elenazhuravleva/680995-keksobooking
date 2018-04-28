@@ -197,6 +197,6 @@ var createCard = function (offersArray) {
   mapSection.insertBefore(docFragment, mapFiltersContainer);
 };
 
-mapMode.classList.remove('map--faded');
-createMapPins(mapPinsBlock,createData());
-createCard(createData().slice(0, 1));
+//mapMode.classList.remove('map--faded');
+//createMapPins(mapPinsBlock,createData());
+//createCard(createData().slice(0, 1));
