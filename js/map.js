@@ -19,6 +19,7 @@ var address = document.querySelector('#address');
 var mapPinMainButtonWidth = mapPinMainButton.querySelector('img').width;
 var mapPinMainButtonHeight = mapPinMainButton.querySelector('img').height;
 
+var nearestOffers = [];
 var advertArrayLength = 8;
 var titleArray = ['Большая уютная квартира',
                   'Маленькая неуютная квартира',
@@ -80,7 +81,6 @@ var getArrayRandomLength = function (array) {
 //Заполнение массива объектов
 var createData = function () {
   var titleElement = getArrayNoDuplicate(titleArray);
-  var nearestOffers = [];
   for (var i = 0; i < advertArrayLength; i++) {
     var positionX = getRandom(locationX[0],locationX[1]);
     var positionY = getRandom(locationY[0], locationY[1]);
@@ -106,9 +106,7 @@ var createData = function () {
         'y': positionY
       }
     };
-
   };
-  return nearestOffers;
 };
 
 //создание DOM-элементов, соответствующих меткам на карте
@@ -142,13 +140,12 @@ var makePopupPhoto = function (parent, photo) {
 };
 
 var makePopupPhotos = function (parent, photos) {
-  for (var i = 0; i < photos.length; i++) {
-    docFragment.appendChild(makePopupPhoto(parent, photos[i]));
-  }
+  photos.forEach(function(it){docFragment.appendChild(makePopupPhoto(parent, it))});
+  var images = parent.querySelectorAll('img:not(.hidden)');
+  images.forEach(function(it) {parent.removeChild(it)});
   parent.removeChild(parent.querySelector('img'));
   parent.appendChild(docFragment);
 };
-
 
 var fillPopupFeature = function (feature) {
   var liElement = document.createElement('li');
@@ -170,8 +167,6 @@ var fillPopupFeatures = function (parent, features) {
   parent.appendChild(ulElement);
 };
 
-
-
 var fillCard = function (inputOfferElement) {
   var popupAvatarElement = mapCardElement.querySelector('.popup__avatar');
   var popupPhotosElement = mapCardElement.querySelector('.popup__photos');
@@ -186,7 +181,7 @@ var fillCard = function (inputOfferElement) {
     offerRoomsText += 'ы';
   }
 
-  //popupPhotosElement.querySelector('img').classList.add('hidden'); //???
+  popupPhotosElement.querySelector('img').classList.add('hidden');
   mapCardElement.querySelector('.popup__title').textContent = inputOfferElement.offer.title;
   mapCardElement.querySelector('.popup__text--address').textContent = inputOfferElement.offer.address;
   mapCardElement.querySelector('.popup__text--price').innerHTML = inputOfferElement.offer.price + '&#x20bd;<span>/ночь</span>';
@@ -204,10 +199,7 @@ var fillCard = function (inputOfferElement) {
 
 var createCard = function (offersArray,id) {
   openCard();
-  for (var i = 0; i < offersArray.length; i++) {
-    docFragment.appendChild(fillCard(offersArray[id]));
-  }
-  //offersArray.forEach(function(it,i,offersArray){docFragment.appendChild(fillCard(it[i]))});//try it
+  docFragment.appendChild(fillCard(offersArray[id]));
   map.insertBefore(docFragment, mapFiltersContainer);
 };
 
@@ -239,7 +231,8 @@ var updateAddressField = function () {
 //работа с меткой
 var onMapPinMainButtonMouseup = function() {
   setActivePage(true);
-  createMapPins(mapPinsBlock,createData());
+  createData();
+  createMapPins(mapPinsBlock,nearestOffers);
   updateAddressField();
   mapPinMainButton.removeEventListener('mouseup',onMapPinMainButtonMouseup);
 };
@@ -263,11 +256,12 @@ var openCard = function() {
 var onMapPinsBlockCLick = function(evt) {
   var target = evt.target;
   var currentPin;
-  while (!target.classList.contains('map__pin') && target.parentElement !== null) {
-    currentPin = target.getAttridute('index');
-     if (isFinite(currentPin)) {
-      createCard(createData()[currentPin]);
-      console.log(currentPin);
+ /* while (!target.classList.contains('map__pin') && target.parentElement !== null) {
+    target = target.parentElement;
+  }*/
+  currentPin = target.dataset.index;
+  if (isFinite(currentPin)) {
+      createCard(nearestOffers,currentPin);
       var closeButton = mapCardElement.querySelector('.popup__close');
       if (closeButton !== null) {
         closeButton.tabindex = '0';
@@ -282,9 +276,6 @@ var onMapPinsBlockCLick = function(evt) {
         });
       }
     }
-
-    target = target.parentElement;
-  }
 };
 
 //Действие по активации страницы по нажатию на метку
