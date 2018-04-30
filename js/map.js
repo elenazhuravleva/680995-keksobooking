@@ -256,9 +256,9 @@ var openCard = function() {
 var onMapPinsBlockCLick = function(evt) {
   var target = evt.target;
   var currentPin;
- /* while (!target.classList.contains('map__pin') && target.parentElement !== null) {
+  while (!target.classList.contains('map__pin') && target.parentElement !== null) {
     target = target.parentElement;
-  }*/
+  }
   currentPin = target.dataset.index;
   if (isFinite(currentPin)) {
       createCard(nearestOffers,currentPin);
