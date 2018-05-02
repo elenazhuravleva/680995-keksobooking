@@ -303,6 +303,11 @@ var onMapPinsBlockCLick = function(evt) {
 
 //Действие по активации страницы по нажатию на метку
 mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+mapPinMainButton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onMapPinMainButtonMouseup(evt);
+  }
+});
 
 //Действия по активации карточек объявлений
 mapPinsBlock.addEventListener('click',onMapPinsBlockCLick);
@@ -388,3 +393,6 @@ typeSelector.addEventListener('change', onTypeSelectorChange);
 timeinSelector.addEventListener('change', onTimeSelectorChange);
 timeoutSelector.addEventListener('change', onTimeSelectorChange);
 resetForm.addEventListener('click', onResetFormClick);
+
+mapPinMainButton.mousedown = function (evt) {};
+mapPinMainButton.mousemove = function (evt) {};
