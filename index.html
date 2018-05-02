@@ -90,7 +90,7 @@
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
 
-      <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
+      <form class="ad-form ad-form--disabled" method="post" action="https://js.dump.academy/keksobooking" enctype="multipart/form-data" autocomplete="off">
         <fieldset class="ad-form-header">
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -107,7 +107,7 @@
 
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <input id="title" name="title" type="text" required minlength="30" maxlength="100" placeholder="Милая, уютная квартирка в центре Токио">
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--wide">
@@ -127,7 +127,7 @@
 
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <input id="price" name="price" type="number" required max="1000000" placeholder="5000">
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--time">
@@ -157,9 +157,9 @@
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
-            <option value="3" selected>для 3 гостей</option>
-            <option value="2">для 2 гостей</option>
             <option value="1">для 1 гостя</option>
+            <option value="2">для 2 гостей</option>
+            <option value="3">для 3 гостей</option>
             <option value="0">не для гостей</option>
           </select>
         </fieldset>
@@ -167,22 +167,22 @@
         <fieldset class="ad-form__element ad-form__element--wide features">
           <legend>Удобства: Wi-Fi, кухня, парковка, стиралка, лифт, кондиционер</legend>
 
-          <input type="checkbox" name="features" value="wifi" id="feature-wifi" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="wifi" id="feature-wifi" class="feature__checkbox visually-hidden">
           <label class="feature feature--wifi" for="feature-wifi">Wi-Fi</label>
 
-          <input type="checkbox" name="features" value="dishwasher" id="feature-dishwasher" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="dishwasher" id="feature-dishwasher" class="feature__checkbox visually-hidden">
           <label class="feature feature--dishwasher" for="feature-dishwasher">Посудомоечная машина</label>
 
-          <input type="checkbox" name="features" value="parking" id="feature-parking" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="parking" id="feature-parking" class="feature__checkbox visually-hidden">
           <label class="feature feature--parking" for="feature-parking">Парковка</label>
 
-          <input type="checkbox" name="features" value="washer" id="feature-washer" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="washer" id="feature-washer" class="feature__checkbox visually-hidden">
           <label class="feature feature--washer" for="feature-washer">Стиральная машина</label>
 
-          <input type="checkbox" name="features" value="elevator" id="feature-elevator" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="elevator" id="feature-elevator" class="feature__checkbox visually-hidden">
           <label class="feature feature--elevator" for="feature-elevator">Лифт</label>
 
-          <input type="checkbox" name="features" value="conditioner" id="feature-conditioner" class="feature__checkbox visually-hidden">
+          <input type="checkbox" name="features[]" value="conditioner" id="feature-conditioner" class="feature__checkbox visually-hidden">
           <label class="feature feature--conditioner" for="feature-conditioner">Кондиционер</label>
         </fieldset>
 
@@ -204,7 +204,7 @@
 
         <fieldset class="ad-form__element ad-form__element--submit">
           <button class="ad-form__submit" type="submit">Опубликовать</button>
-          или <button class="ad-form__reset" type="reset">очистить</button>
+          или <button class="ad-form__reset" id="form-reset" type="reset">очистить</button>
         </fieldset>
       </form>
     </section>
@@ -262,7 +262,7 @@
       </div>
     </article>
 
-    <button type="button" class="map__pin" style="left: 200px; top: 400px;"><img src="img/avatars/user07.png" width="40" height="40" draggable="false" alt="Метка объявления"></button>
+    <button type="button" class="map__pin map__pin--new" style="left: 200px; top: 400px;"><img src="img/avatars/user07.png" width="40" height="40" draggable="false" alt="Метка объявления"></button>
   </template>
 
   <script src="js/map.js"></script>

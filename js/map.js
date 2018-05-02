@@ -18,6 +18,14 @@ var mapCardElement = mapCardArticleTemplate.cloneNode(true);
 var address = document.querySelector('#address');
 var mapPinMainButtonWidth = mapPinMainButton.querySelector('img').width;
 var mapPinMainButtonHeight = mapPinMainButton.querySelector('img').height;
+var capacitySelector = adForm.querySelector('#capacity');
+var roomsSelector = adForm.querySelector('#room_number');
+var typeSelector = adForm.querySelector('#type');
+var priceSelector = adForm.querySelector('#price');
+var timeinSelector = adForm.querySelector('#timein');
+var timeoutSelector = adForm.querySelector('#timeout');
+var resetForm = adForm.querySelector('#form-reset');
+var typeCheckboxSelect = adForm.querySelectorAll('[type="checkbox"]');
 
 var nearestOffers = [];
 var advertArrayLength = 8;
@@ -53,8 +61,15 @@ var photosArray = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
                    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
                    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var locationX = [300, 900];
-var locationY = [150, 500];
+var locationXRange = {
+  min: 300,
+  max: 900
+};
+
+var locationYRange = {
+  min: 150,
+  max: 500
+};
 
 var getRandom = function (min, max) {
   var rand = Math.floor(Math.random() * (max - min + 1) + min);
@@ -82,8 +97,8 @@ var getArrayRandomLength = function (array) {
 var createData = function () {
   var titleElement = getArrayNoDuplicate(titleArray);
   for (var i = 0; i < advertArrayLength; i++) {
-    var positionX = getRandom(locationX[0],locationX[1]);
-    var positionY = getRandom(locationY[0], locationY[1]);
+    var positionX = getRandom(locationXRange.min,locationXRange.max);
+    var positionY = getRandom(locationYRange.min, locationYRange.max);
     nearestOffers[i] = {
       'author': {
         'avatar': 'img/avatars/user0' + (i+1) +'.png'
@@ -95,8 +110,8 @@ var createData = function () {
         'type': typeArray[getRandom(0,typeArray.length-1)],
         'rooms': getRandom(1, 5),
         'guests': getRandom(1, 10),
-        'checkin': '1' + getRandom(2, 4) + ':00',
-        'checkout': '1' + getRandom(2, 4) + ':00',
+        'checkin': getRandom(12, 14) + ':00',
+        'checkout': getRandom(12, 14) + ':00',
         'features': getArrayRandomLength(featuresArray),
         'description': '',
         'photos': getArrayNoDuplicate(photosArray)
@@ -110,7 +125,7 @@ var createData = function () {
 };
 
 //создание DOM-элементов, соответствующих меткам на карте
-var createMarker = function (offer,id) {
+var createMarker = function (offer,id) {    // createmarkerofferonmap or foroffer
   var mapPinElement = mapPinButtonTemplate.cloneNode(true);
   var image = mapPinElement.querySelector('img');
   mapPinElement.tabindex = '0';
@@ -125,6 +140,12 @@ var createMarker = function (offer,id) {
 
 //Отрисовка сгенерированных DOM-элементов в блок
 var createMapPins = function (parent, offer) {
+  if(parent.querySelector('.map__pin--new')) {
+  var childs = parent.querySelectorAll('.map__pin--new');
+  childs.forEach(function(it) {
+    it.remove();
+  })
+  }
   for (var i = 0; i < offer.length; i++) {
     docFragment.appendChild(createMarker(offer[i],i));
   }
@@ -234,6 +255,8 @@ var onMapPinMainButtonMouseup = function() {
   createData();
   createMapPins(mapPinsBlock,nearestOffers);
   updateAddressField();
+  onRoomsSelectorChange();
+  onTypeSelectorChange();
   mapPinMainButton.removeEventListener('mouseup',onMapPinMainButtonMouseup);
 };
 
@@ -280,6 +303,11 @@ var onMapPinsBlockCLick = function(evt) {
 
 //Действие по активации страницы по нажатию на метку
 mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+mapPinMainButton.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onMapPinMainButtonMouseup(evt);
+  }
+});
 
 //Действия по активации карточек объявлений
 mapPinsBlock.addEventListener('click',onMapPinsBlockCLick);
@@ -291,3 +319,80 @@ mapPinsBlock.addEventListener('keydown', function (evt) {
 
 //По умолчанию страница недоступна
 setActivePage(false);
+
+var onRoomsSelectorChange = function () {
+  var allowedVariants = {
+    '1': ['1'],
+    '2': ['1','2'],
+    '3': ['1','2','3'],
+    '100': ['0']
+  };
+  var rooms = roomsSelector.options[roomsSelector.selectedIndex].value;
+  var capacity = capacitySelector.options;
+  for (var i = 0; i < capacity.length; i++) {
+    if (allowedVariants[rooms].indexOf(capacity[i].value) === -1) {
+      capacity[i].disabled = true;
+      capacity[i].style.display = 'none';
+    } else {
+      capacity[i].disabled = false;
+      capacity[i].selected = true;
+      capacity[i].style.display = 'block';
+    }
+  };
+};
+
+var onTypeSelectorChange = function () {
+  var allowedVariants = {
+    'palace': 10000,
+    'flat': 1000,
+    'house': 5000,
+    'bungalo': 0
+  };
+
+  var type = typeSelector.options[typeSelector.selectedIndex].value;
+  var minAllowedValue = allowedVariants[type];
+  priceSelector.placeholder = minAllowedValue;
+  priceSelector.min = minAllowedValue;
+};
+
+var onTimeSelectorChange = function (evt) {
+  timeinSelector.value = evt.target.value;
+  timeoutSelector.value = evt.target.value;
+};
+
+var onResetFormClick = function () {
+  var formDefaults = {
+    'title' : '',
+    'address' : '',
+    'type' : 'flat',
+    'price' : 1000,
+    'rooms' : '1',
+    'capacity' : '1',
+    'timein' : '12:00',
+    'timeout' : '12:00',
+    'description' : ''
+  }
+
+  for (let key in formDefaults) {
+    adForm.querySelector('[name="'+ key +'"]').value = formDefaults[key];
+  }
+  typeCheckboxSelect.forEach(function(checkbox) {
+    checkbox.checked = false;
+  });
+
+  nearestOffers =[];
+  createMapPins(mapPinsBlock,nearestOffers);
+  closeCard();
+  setActivePage(false);
+  setAddressField();
+  mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+};
+
+roomsSelector.addEventListener('change', onRoomsSelectorChange);
+typeSelector.addEventListener('change', onTypeSelectorChange);
+timeinSelector.addEventListener('change', onTimeSelectorChange);
+timeoutSelector.addEventListener('change', onTimeSelectorChange);
+resetForm.addEventListener('click', onResetFormClick);
+
+mapPinMainButton.mousedown = function (evt) {};
+mapPinMainButton.mousemove = function (evt) {};
