@@ -26,6 +26,9 @@ var timeinSelector = adForm.querySelector('#timein');
 var timeoutSelector = adForm.querySelector('#timeout');
 var resetForm = adForm.querySelector('#form-reset');
 var typeCheckboxSelect = adForm.querySelectorAll('[type="checkbox"]');
+var mapPinMainButtonStartLeft = mapPinMainButton.style.left;
+var mapPinMainButtonStartTop = mapPinMainButton.style.top;
+var startCoords = {};
 
 var nearestOffers = [];
 var advertArrayLength = 8;
@@ -71,12 +74,26 @@ var locationYRange = {
   max: 500
 };
 
+// Пределы карты, за которые не должна вылезать главная метка
+var mapPinLocationXLimits = {
+  min: 0,
+  max: 1135
+};
+
+var mapPinLocationYLimits = {
+  min: 150,
+  max: 625
+}
+
+var mapPinMainTailLength = 22;
+
 var getRandom = function (min, max) {
   var rand = Math.floor(Math.random() * (max - min + 1) + min);
   return rand;
 };
 
-var getArrayNoDuplicate = function (array) {
+// Перемешанный массив
+var getArrayShuffledNoDuplicate = function (array) {
   var newArray = array.slice(0,array.length);
   var k = 0;
   var temp = 0;
@@ -89,13 +106,14 @@ var getArrayNoDuplicate = function (array) {
   return newArray;
 };
 
+// Массив случайной длины
 var getArrayRandomLength = function (array) {
-  return getArrayNoDuplicate(array).slice(0,getRandom(1,array.length));
+  return getArrayShuffledNoDuplicate(array).slice(0,getRandom(1,array.length));
 }
 
 //Заполнение массива объектов
 var createData = function () {
-  var titleElement = getArrayNoDuplicate(titleArray);
+  var titleElement = getArrayShuffledNoDuplicate(titleArray);
   for (var i = 0; i < advertArrayLength; i++) {
     var positionX = getRandom(locationXRange.min,locationXRange.max);
     var positionY = getRandom(locationYRange.min, locationYRange.max);
@@ -114,7 +132,7 @@ var createData = function () {
         'checkout': getRandom(12, 14) + ':00',
         'features': getArrayRandomLength(featuresArray),
         'description': '',
-        'photos': getArrayNoDuplicate(photosArray)
+        'photos': getArrayShuffledNoDuplicate(photosArray)
       },
       'location': {
         'x': positionX,
@@ -125,7 +143,7 @@ var createData = function () {
 };
 
 //создание DOM-элементов, соответствующих меткам на карте
-var createMarker = function (offer,id) {    // createmarkerofferonmap or foroffer
+var createMarkerForOffer = function (offer,id) {
   var mapPinElement = mapPinButtonTemplate.cloneNode(true);
   var image = mapPinElement.querySelector('img');
   mapPinElement.tabindex = '0';
@@ -147,7 +165,7 @@ var createMapPins = function (parent, offer) {
   })
   }
   for (var i = 0; i < offer.length; i++) {
-    docFragment.appendChild(createMarker(offer[i],i));
+    docFragment.appendChild(createMarkerForOffer(offer[i],i));
   }
   parent.appendChild(docFragment);
 };
@@ -218,6 +236,7 @@ var fillCard = function (inputOfferElement) {
   return mapCardElement;
 };
 
+// Создание карточки объявления
 var createCard = function (offersArray,id) {
   openCard();
   docFragment.appendChild(fillCard(offersArray[id]));
@@ -233,11 +252,14 @@ var setActivePage = function (status) {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
     } else {
+    mapPinMainButton.style.left = mapPinMainButtonStartLeft;
+    mapPinMainButton.style.top = mapPinMainButtonStartTop;
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     }
     setFieldsetDisabled(!status);
     setAddressField();
+    mapPinMainButton.addEventListener('mousedown',onMapPinMainButtonMousedown);
 };
 
 //Поле адреса
@@ -246,17 +268,20 @@ var setAddressField = function () {
   address.readOnly = true;
 };
 var updateAddressField = function () {
-  address.value = (parseInt(mapPinMainButton.style.left, 10) + mapPinMainButtonWidth / 2) + ', ' + (parseInt(mapPinMainButton.style.top, 10) + mapPinMainButtonHeight / 2 + 22);
+  address.value = (parseInt(mapPinMainButton.style.left, 10) + mapPinMainButtonWidth / 2) + ', ' + (parseInt(mapPinMainButton.style.top, 10) + mapPinMainButtonHeight / 2 + mapPinMainTailLength);
 };
 
 //работа с меткой
-var onMapPinMainButtonMouseup = function() {
+var onMapPinMainButtonMouseup = function(evt) {
+  evt.preventDefault();
+  mapPinMainButton.removeEventListener('mousedown',onMapPinMainButtonMousedown);
   setActivePage(true);
   createData();
   createMapPins(mapPinsBlock,nearestOffers);
   updateAddressField();
   onRoomsSelectorChange();
   onTypeSelectorChange();
+  mapPinMainButton.removeEventListener('mousemove',onMapPinMainButtonMousemove);
   mapPinMainButton.removeEventListener('mouseup',onMapPinMainButtonMouseup);
 };
 
@@ -360,6 +385,7 @@ var onTimeSelectorChange = function (evt) {
   timeoutSelector.value = evt.target.value;
 };
 
+// Кнопка "очистить" обновляет карту, данные полей обнуляет, закрывает активную карточку объявления
 var onResetFormClick = function () {
   var formDefaults = {
     'title' : '',
@@ -386,6 +412,7 @@ var onResetFormClick = function () {
   setActivePage(false);
   setAddressField();
   mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+  mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);//
 };
 
 roomsSelector.addEventListener('change', onRoomsSelectorChange);
@@ -394,5 +421,48 @@ timeinSelector.addEventListener('change', onTimeSelectorChange);
 timeoutSelector.addEventListener('change', onTimeSelectorChange);
 resetForm.addEventListener('click', onResetFormClick);
 
-mapPinMainButton.mousedown = function (evt) {};
-mapPinMainButton.mousemove = function (evt) {};
+mapPinMainButton.addEventListener('mousedown', onMapPinMainButtonMousedown);
+
+var onMapPinMainButtonMousedown = function(evt) {
+  evt.preventDefault();
+  setActivePage(true);
+  startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  mapPinMainButton.addEventListener('mousemove', onMapPinMainButtonMousemove);
+  mapPinMainButton.addEventListener('mouseup', onMapPinMainButtonMouseup);
+};
+
+var onMapPinMainButtonMousemove = function(evt) {
+  evt.preventDefault();
+
+  var movement = {
+    x: startCoords.x - evt.clientX,
+    y: startCoords.y - evt.clientY
+  };
+
+  startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var finalTop = mapPinMainButton.offsetTop - movement.y;
+  var finalLeft = mapPinMainButton.offsetLeft - movement.x;
+
+  if (finalTop < mapPinLocationYLimits.min) {
+    finalTop = mapPinLocationYLimits.min;
+  } else if (finalTop > mapPinLocationYLimits.max) {
+    finalTop = mapPinLocationYLimits.max;
+  }
+
+  if (finalLeft < mapPinLocationXLimits.min) {
+    finalLeft = mapPinLocationXLimits.min;
+  } else if (finalLeft > mapPinLocationXLimits.max) {
+    finalLeft = mapPinLocationXLimits.max;
+  }
+
+  mapPinMainButton.style.top = finalTop + 'px';
+  mapPinMainButton.style.left = finalLeft + 'px';
+  updateAddressField();
+};
