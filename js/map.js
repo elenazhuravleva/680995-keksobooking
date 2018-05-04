@@ -276,13 +276,12 @@ var onMapPinMainButtonMouseup = function(evt) {
   evt.preventDefault();
   mapPinMainButton.removeEventListener('mousedown',onMapPinMainButtonMousedown);
   setActivePage(true);
-  createData();
   createMapPins(mapPinsBlock,nearestOffers);
   updateAddressField();
   onRoomsSelectorChange();
   onTypeSelectorChange();
-  mapPinMainButton.removeEventListener('mousemove',onMapPinMainButtonMousemove);
-  mapPinMainButton.removeEventListener('mouseup',onMapPinMainButtonMouseup);
+  document.removeEventListener('mousemove',onMapPinMainButtonMousemove);
+  document.removeEventListener('mouseup',onMapPinMainButtonMouseup);
 };
 
 var onCardEscPress = function(evt) {
@@ -327,7 +326,7 @@ var onMapPinsBlockCLick = function(evt) {
 };
 
 //Действие по активации страницы по нажатию на метку
-mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+document.addEventListener('mouseup',onMapPinMainButtonMouseup);
 mapPinMainButton.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     onMapPinMainButtonMouseup(evt);
@@ -411,7 +410,7 @@ var onResetFormClick = function () {
   closeCard();
   setActivePage(false);
   setAddressField();
-  mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+  document.addEventListener('mouseup',onMapPinMainButtonMouseup);
   mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);//
 };
 
@@ -430,8 +429,8 @@ var onMapPinMainButtonMousedown = function(evt) {
     x: evt.clientX,
     y: evt.clientY
   };
-  mapPinMainButton.addEventListener('mousemove', onMapPinMainButtonMousemove);
-  mapPinMainButton.addEventListener('mouseup', onMapPinMainButtonMouseup);
+  document.addEventListener('mousemove', onMapPinMainButtonMousemove);
+  document.addEventListener('mouseup', onMapPinMainButtonMouseup);
 };
 
 var onMapPinMainButtonMousemove = function(evt) {
@@ -466,3 +465,5 @@ var onMapPinMainButtonMousemove = function(evt) {
   mapPinMainButton.style.left = finalLeft + 'px';
   updateAddressField();
 };
+
+createData();
