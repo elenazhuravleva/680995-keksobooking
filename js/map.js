@@ -29,6 +29,7 @@ var typeCheckboxSelect = adForm.querySelectorAll('[type="checkbox"]');
 var mapPinMainButtonStartLeft = mapPinMainButton.style.left;
 var mapPinMainButtonStartTop = mapPinMainButton.style.top;
 var startCoords = {};
+var countClick = 0;
 
 var nearestOffers = [];
 var advertArrayLength = 8;
@@ -273,9 +274,11 @@ var updateAddressField = function () {
 
 //работа с меткой
 var onMapPinMainButtonMouseup = function(evt) {
+  countClick++;
   evt.preventDefault();
   mapPinMainButton.removeEventListener('mousedown',onMapPinMainButtonMousedown);
   setActivePage(true);
+  if (countClick === 1) {createData();}
   createMapPins(mapPinsBlock,nearestOffers);
   updateAddressField();
   onRoomsSelectorChange();
@@ -411,7 +414,8 @@ var onResetFormClick = function () {
   setActivePage(false);
   setAddressField();
   document.addEventListener('mouseup',onMapPinMainButtonMouseup);
-  mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);//
+  mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);
+  countClick = 0;
 };
 
 roomsSelector.addEventListener('change', onRoomsSelectorChange);
@@ -465,5 +469,3 @@ var onMapPinMainButtonMousemove = function(evt) {
   mapPinMainButton.style.left = finalLeft + 'px';
   updateAddressField();
 };
-
-createData();
