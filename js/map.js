@@ -3,7 +3,6 @@
 
 (function () {
 
-
  var map = document.querySelector('.map');
  var adForm = document.querySelector('.ad-form');
  var template = document.querySelector('template');
@@ -18,7 +17,7 @@
  var mapPinMainButtonStartLeft = mapPinMainButton.style.left;
  var mapPinMainButtonStartTop = mapPinMainButton.style.top;
  var startCoords = {};
- var countClick = 0;
+ var mouseClick = false;
 
 // Пределы карты, за которые не должна вылезать главная метка
 var mapPinLocationXLimits = {
@@ -33,7 +32,6 @@ var mapPinLocationYLimits = {
 
 var mapPinMainTailLength = 22;
 
-
   //Отрисовка сгенерированных DOM-элементов в блок
   var createMapPins = function (parent, offer) {
     if(parent.querySelector('.map__pin--new')) {
@@ -47,6 +45,7 @@ var mapPinMainTailLength = 22;
     }
     parent.appendChild(docFragment);
     };
+
     window.map = {
       setActivePage : function (status) {
     if (status) {
@@ -58,7 +57,6 @@ var mapPinMainTailLength = 22;
       map.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
        createMapPins(mapPinsBlock,[]);
-       countClick = 0;
        document.addEventListener('mouseup',onMapPinMainButtonMouseup);
        mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);
       }
@@ -114,11 +112,10 @@ var mapPinMainTailLength = 22;
     //работа с меткой
     var onMapPinMainButtonMouseup = function(evt) {
     evt.preventDefault();
-    countClick++;
     mapPinMainButton.removeEventListener('mousedown',onMapPinMainButtonMousedown);
     window.map.setActivePage(true);
-    if (countClick === 1) {
-    window.data.createData();
+    mouseClick = true;
+    if ( mouseClick) {
     createMapPins(mapPinsBlock,window.data.nearestOffers);}
     updateAddressField();
     window.form.onRoomsSelectorChange();
@@ -127,9 +124,20 @@ var mapPinMainTailLength = 22;
     document.removeEventListener('mouseup',onMapPinMainButtonMouseup);
   };
 
+   var onSuccess = function (response) {
+    window.data.setData(response);
+   };
+
+   var onError = function (errorMessage) {
+    window.util.showErrorMessage(errorMessage);
+   };
+
     var onMapPinMainButtonMousedown = function(evt) {
     evt.preventDefault();
     window.map.setActivePage(true);
+    if (!window.data.dataLoad() && !window.backend.dataLoadingState) {
+      window.backend.dataLoad (onSuccess, onError);
+    }
     startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -152,9 +160,8 @@ var mapPinMainTailLength = 22;
 
 
 //Действие по активации страницы по нажатию на метку
-  document.addEventListener('mouseup',onMapPinMainButtonMouseup);
   mapPinMainButton.addEventListener('keydown', function (evt) {
-  window.util.onEnterPress(evt,onMapPinMainButtonMouseup(evt));
+  window.util.onEnterPress(evt,onMapPinMainButtonMouseup);
 });
 
 //Действия по активации карточек объявлений

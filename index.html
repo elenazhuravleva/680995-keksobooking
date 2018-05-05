@@ -90,7 +90,7 @@
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
 
-      <form class="ad-form ad-form--disabled" method="post" action="https://js.dump.academy/keksobooking" enctype="multipart/form-data" autocomplete="off">
+      <form class="ad-form ad-form--disabled" method="POST" action="https://js.dump.academy/keksobooking" enctype="multipart/form-data" autocomplete="off">
         <fieldset class="ad-form-header">
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -203,7 +203,7 @@
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--submit">
-          <button class="ad-form__submit" type="submit">Опубликовать</button>
+          <button class="ad-form__submit" id="submit" type="submit">Опубликовать</button>
           или <button class="ad-form__reset" id="form-reset" type="reset">очистить</button>
         </fieldset>
       </form>
@@ -265,6 +265,7 @@
     <button type="button" class="map__pin map__pin--new" style="left: 200px; top: 400px;"><img src="img/avatars/user07.png" width="40" height="40" draggable="false" alt="Метка объявления"></button>
   </template>
 
+  <script src="js/backend.js"></script> <!--> модуль экспортирует в глобальную область видимости функции для взаимодействия с удаленным севером через XHR<-->
   <script src="js/util.js"></script> <!--> модуль с утилитными методами работы с клавиатурой<-->
   <script src="js/data.js"></script> <!-- модуль, который создает данные -->
   <script src="js/card.js"></script> <!-- модуль, который создает карточки объявлений-->
