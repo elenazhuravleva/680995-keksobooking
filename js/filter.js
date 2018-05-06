@@ -45,16 +45,6 @@
     'filter-conditioner': 'conditioner'
    };
 
-  var resetFiltersDefaults = function () {
-    for (var key in filtersDefaults) {
-      console.log('[name="'+ key +'"]');
-      mapFilters.querySelector('[name="'+ key +'"]').value = filtersDefaults[key];
-    }
-
-    typeCheckboxSelect.forEach(function(checkbox) {
-      checkbox.checked = false;
-    });
-  };
 
   var updateFilter = function () {
     housingPrice.value = 'any';
@@ -67,8 +57,6 @@
     filterParking.checked = false;
     filterWasher.checked = false;
     filterWifi.checked = false;
-
-    //resetFiltersDefaults();
   };
 
 
