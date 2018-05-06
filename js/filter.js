@@ -20,6 +20,8 @@
 
   var typeCheckboxSelect = featuresSelector.querySelectorAll('[type="checkbox"]');
 
+
+
   var filtersDefaults = {
     'housing-type': 'any',
     'housing-price': 'any',
@@ -119,6 +121,8 @@
   };
 
   var onMapFiltersChange = function (evt) {
+
+    window.card.setCardVisible(false);
     var element = evt.target;
     var value = null;
     while (!element.classList.contains('map__filter') && !element.classList.contains('map__checkbox') && element.parentElement !== null) {
@@ -140,7 +144,7 @@
   mapFilters.addEventListener('change', onMapFiltersChange);
 
   window.filter = {
-   // offersNumber: offersNumber,
+    offersNumber: offersNumber,
     updateFilter: updateFilter
   };
 

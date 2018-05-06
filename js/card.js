@@ -107,6 +107,7 @@
      closeCard();
   };
 
+
   var closeCard = function() {
     mapCardElement.classList.add('hidden');
     document.removeEventListener('keydown', function (evt) { window.util.onEscPress(evt,closeCard)});
@@ -132,6 +133,13 @@
   window.card = {
     closeCard: closeCard,
     openCard: openCard,
-    createCard: createCard
+    createCard: createCard,
+    setCardVisible : function (flag) {
+      if (flag) {
+        mapCardElement.classList.remove('hidden');
+      } else {
+        mapCardElement.classList.add('hidden');
+      }
+    }
   };
 })();
