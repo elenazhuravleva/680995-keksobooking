@@ -12,7 +12,9 @@ var priceSelector = adForm.querySelector('#price');
 var timeinSelector = adForm.querySelector('#timein');
 var timeoutSelector = adForm.querySelector('#timeout');
 var resetForm = adForm.querySelector('#form-reset');
+var submit = adForm.querySelector('#submit');
 var typeCheckboxSelect = adForm.querySelectorAll('[type="checkbox"]');
+var titleSelector = adForm.querySelector('#title');
 
 var mapPinsBlock = document.querySelector('.map__pins');
 var mapPinMainButton = document.querySelector('.map__pin--main');
@@ -73,6 +75,24 @@ var formDefaults = {
   priceSelector.placeholder = minAllowedValue;
   priceSelector.min = minAllowedValue;
 };
+var setErrors = function () {
+  var errorElements = adForm.querySelectorAll('.error');
+  for (var i = 0; i < errorElements.length; i++) {
+    var element = errorElements[i];
+    element.style.border = '1px solid red';
+  }
+
+};
+
+var clearErrors = function () {
+  var errorElements = adForm.querySelectorAll('.error');
+
+  for (var i = 0; i < errorElements.length; i++) {
+    var element = errorElements[i];
+    element.style.border = '1px solid black';
+    element.classList.remove('error');
+  }
+  };
 
 // Кнопка "очистить" обновляет карту, данные полей обнуляет, закрывает активную карточку объявления
 var onResetFormClick = function () {
@@ -84,14 +104,43 @@ typeCheckboxSelect.forEach(function(checkbox) {
 });
 window.card.closeCard();
 window.map.setActivePage(false);
+clearErrors();
 };
+
+var checkError = function (element) {
+  if (!element.validity.valid) {
+    element.classList.add('error');
+  }
+};
+
+
+var onSubmitClick = function () {
+   clearErrors();
+   checkError(capacitySelector);
+   checkError(priceSelector);
+   checkError(titleSelector);
+   setErrors();
+};
+
+adForm.addEventListener('submit', function(evt) {
+  window.backend.dataUpload(new FormData(adForm), function(response) {
+   if (response !== null) {
+     window.util.showSuccessMessage();
+     onResetFormClick();
+   }
+  }, function (errorMessage) {
+      window.util.createErrorMessage(errorMessage);
+  });
+  evt.preventDefault();
+});
 
 window.form = {
   setFieldsetDisabled: setFieldsetDisabled,
   onRoomsSelectorChange: onRoomsSelectorChange,
   onTimeSelectorChange: onTimeSelectorChange,
   onTypeSelectorChange: onTypeSelectorChange,
-  onResetFormClick: onResetFormClick
+  onResetFormClick: onResetFormClick,
+  onSubmitClick: onSubmitClick
 };
 
 roomsSelector.addEventListener('change', onRoomsSelectorChange);
@@ -99,5 +148,6 @@ typeSelector.addEventListener('change', onTypeSelectorChange);
 timeinSelector.addEventListener('change', onTimeSelectorChange);
 timeoutSelector.addEventListener('change', onTimeSelectorChange);
 resetForm.addEventListener('click', onResetFormClick);
+submit.addEventListener('click', onSubmitClick);
 
 })();

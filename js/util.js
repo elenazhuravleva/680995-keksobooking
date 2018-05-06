@@ -5,30 +5,32 @@
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
+var successElement = document.querySelector('.success');
+
+var createErrorMessage = function (message) {
+  var errorElement = document.createElement('div');
+  var errorText = document.createElement('p');
+  errorText.textContent = message;
+  errorText.style.fontSize = '30px';
+  errorText.style.textAlign = 'center';
+  errorElement.style.position = 'absolute';
+  errorElement.style.width = '300px';
+  errorElement.style.height = '100px';
+  errorElement.style.left = 0;
+  errorElement.style.top = 0;
+  errorElement.style.right = 0;
+  errorElement.style.bottom = 0;
+  errorElement.style.margin = 'auto';
+  errorElement.style.backgroundColor = 'red';
+  errorElement.style.border = 'px solid #d4d4d4';
+  errorElement.style.opacity = 0.9;
+  errorElement.style.zIndex = 100;
+  errorElement.appendChild(errorText);
+  document.body.insertAdjacentElement('afterbegin', errorElement);
+  return errorElement;
+};
+
   window.util = {
-     getRandom : function (min, max) {
-      var rand = Math.floor(Math.random() * (max - min + 1) + min);
-      return rand;
-    },
-
-    // Перемешанный массив
-     getArrayShuffledNoDuplicate : function (array) {
-      var newArray = array.slice(0,array.length);
-      var k = 0;
-      var temp = 0;
-      for (var i = newArray.length -1; i > 0 ; i--) {
-        k = Math.floor(Math.random()*(i+1));
-        temp = newArray[i];
-        newArray[i] = newArray[k];
-        newArray[k] = temp;
-      }
-      return newArray;
-    },
-
-    // Массив случайной длины
-     getArrayRandomLength : function (array) {
-      return this.getArrayShuffledNoDuplicate(array).slice(0,this.getRandom(1,array.length));
-    },
 
     onEscPress : function(evt,action) {
       if (evt.keyCode === ESC_KEYCODE) {
@@ -40,6 +42,19 @@ var ENTER_KEYCODE = 13;
       if (evt.keyCode === ENTER_KEYCODE) {
         action(evt);
       }
+    },
+
+    showSuccessMessage: function () {
+      successElement.classList.remove('hidden');
+      setTimeout(function () {
+        successElement.classList.add('hidden');
+        }, 3000);
+    },
+    showErrorMessage: function (message) {
+      var errorElement = createErrorMessage(message);
+      setTimeout(function () {
+        document.body.removeChild(errorElement);
+        }, 10000);
     }
   }
 })();
