@@ -4,7 +4,7 @@
 (function () {
 
 var URL = {
-    LOAD: 'https://js.dump.academy/keksobooking/data',
+    LOAD: 'https://js.dump.academy/keksobooking/data/',
     UPLOAD: 'https://js.dump.academy/keksobooking'
   };
 
@@ -17,10 +17,15 @@ var URL = {
       if (xhr.status === 200) {
         window.backend.dataLoadingState = false;
         onSuccess(xhr.response);
+      }  else if  (xhr.status === 400) {
+        onError('неверный запрос');
+      } else if  (xhr.status === 404) {
+        onError('ничего не найдено');
       } else {
         onError('Стастус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
+
 
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения. Код ошибки ' + xhr.statusText);

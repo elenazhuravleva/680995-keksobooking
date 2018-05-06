@@ -75,6 +75,14 @@ var formDefaults = {
   priceSelector.placeholder = minAllowedValue;
   priceSelector.min = minAllowedValue;
 };
+var setErrors = function () {
+  var errorElements = adForm.querySelectorAll('.error');
+  for (var i = 0; i < errorElements.length; i++) {
+    var element = errorElements[i];
+    element.style.border = '1px solid red';
+  }
+
+};
 
 var clearErrors = function () {
   var errorElements = adForm.querySelectorAll('.error');
@@ -111,10 +119,7 @@ var onSubmitClick = function () {
    checkError(capacitySelector);
    checkError(priceSelector);
    checkError(titleSelector);
-   var errorElements = adForm.querySelectorAll('.error');
-   for (var i = 0; i < errorElements.length; i++ ) {
-     errorElements[i].style.border = '5px solid red';
-   }
+   setErrors();
 };
 
 adForm.addEventListener('submit', function(evt) {
