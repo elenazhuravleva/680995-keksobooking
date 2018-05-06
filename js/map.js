@@ -45,7 +45,8 @@ window.map = {
       if (i=== 5 ) {
         break;
       }
-      docFragment.appendChild(window.pin.createMarkerForOffer(offer[i],i));
+      var offerElement = offer[i];
+      docFragment.appendChild(window.pin.createMarkerForOffer(offerElement));
     }
     parent.appendChild(docFragment);
     },
@@ -126,7 +127,7 @@ window.map = {
     window.map.setActivePage(true);
     mouseClick = true;
     if ( mouseClick) {
-      window.map.createMapPins(mapPinsBlock,window.data.nearestOffers);}
+      window.map.createMapPins(mapPinsBlock,window.data.nearestOffers.slice(0, window.filter.offersNumber));}
     updateAddressField();
     window.form.onRoomsSelectorChange();
     window.form.onTypeSelectorChange();
@@ -136,7 +137,7 @@ window.map = {
 
    var onSuccess = function (response) {
     window.data.setData(response);
-    window.map.createMapPins(mapPinsBlock,window.data.nearestOffers);
+    window.map.createMapPins(mapPinsBlock,window.data.nearestOffers.slice(0, window.filter.offersNumber));
    };
 
    var onError = function (errorMessage) {
@@ -159,14 +160,12 @@ window.map = {
 
   var onMapPinsBlockCLick = function(evt) {
     var target = evt.target;
-    var currentPin;
     while (!target.classList.contains('map__pin') && target.parentElement !== null) {
       target = target.parentElement;
     }
-    currentPin = target.dataset.index;
-    if (isFinite(currentPin)) {
-        window.card.createCard(window.data.nearestOffers,currentPin);
-      }
+    if (target.dataset.offer) {
+      window.card.createCard(JSON.parse(target.dataset.offer));
+    }
   };
 
 

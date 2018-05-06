@@ -97,9 +97,9 @@
     return mapCardElement;
   };
   // Создание карточки объявления
-  var createCard = function (offersArray,id) {
+  var createCard = function (offerElement) {
   openCard();
-  docFragment.appendChild(fillCard(offersArray[id]));
+  docFragment.appendChild(fillCard(offerElement));
   map.insertBefore(docFragment, mapFiltersContainer);
   };
 
