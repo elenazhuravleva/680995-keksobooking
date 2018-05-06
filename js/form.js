@@ -121,7 +121,7 @@ adForm.addEventListener('submit', function(evt) {
   window.backend.dataUpload(new FormData(adForm), function(response) {
    if (response !== null) {
      window.util.showSuccessMessage();
-     onResetFormClick;
+     onResetFormClick();
    }
   }, function (errorMessage) {
       window.util.createErrorMessage(errorMessage);

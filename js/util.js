@@ -39,13 +39,13 @@ var createErrorMessage = function () {
       successElement.classList.remove('hidden');
       setTimeout(function () {
         successElement.classList.add('hidden');
-        }, 30000);
+        }, 3000);
     },
     showErrorMessage: function (message) {
       var errorElement = createErrorMessage(message);
       setTimeout(function () {
         document.body.removeChild(errorElement);
-        }, 100000000);
+        }, 10000);
     }
   }
 })();
