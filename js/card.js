@@ -19,7 +19,14 @@
   var closeButton = mapCardElement.querySelector('.popup__close');
 
   var makePopupPhoto = function (parent, photo) {
-    var image = parent.querySelector('img').cloneNode(true);
+    if (parent.querySelector('img')) {
+      var image = parent.querySelector('img').cloneNode(true);
+    } else {
+      var image = parent.appendChild(document.createElement('img'));
+      image.classList.add('popup__photo');
+      image.width = 45;
+      image.height = 40;
+    }
     image.src = photo;
     image.classList.remove('hidden');
     return image;
@@ -28,8 +35,9 @@
   var makePopupPhotos = function (parent, photos) {
     photos.forEach(function(it){docFragment.appendChild(makePopupPhoto(parent, it))});
     var images = parent.querySelectorAll('img:not(.hidden)');
+    if (images.length !==0 ) {
     images.forEach(function(it) {parent.removeChild(it)});
-    parent.removeChild(parent.querySelector('img'));
+    parent.removeChild(parent.querySelector('img'));}
     parent.appendChild(docFragment);
   };
 
@@ -67,13 +75,13 @@
       offerRoomsText += 'ы';
     }
 
-    // if (popupPhotosElement.querySelector('img')) {
-    // popupPhotosElement.querySelector('img').classList.add('hidden');
-    // popupPhotosElement.dataset.hasimage = 1;
-    // } else {
-    //   popupPhotosElement.dataset.hasimage = 0;
-    // }
+    if (popupPhotosElement.querySelector('img')) {
     popupPhotosElement.querySelector('img').classList.add('hidden');
+    popupPhotosElement.dataset.hasimage = 0;
+    } else {
+      popupPhotosElement.dataset.hasimage = 1;
+    }
+
     mapCardElement.querySelector('.popup__title').textContent = inputOfferElement.offer.title;
     mapCardElement.querySelector('.popup__text--address').textContent = inputOfferElement.offer.address;
     mapCardElement.querySelector('.popup__text--price').innerHTML = inputOfferElement.offer.price + '&#x20bd;<span>/ночь</span>';
@@ -89,15 +97,16 @@
     return mapCardElement;
   };
   // Создание карточки объявления
-  var createCard = function (offersArray,id) {
+  var createCard = function (offerElement) {
   openCard();
-  docFragment.appendChild(fillCard(offersArray[id]));
+  docFragment.appendChild(fillCard(offerElement));
   map.insertBefore(docFragment, mapFiltersContainer);
   };
 
   var onCloseButtonClick = function () {
      closeCard();
   };
+
 
   var closeCard = function() {
     mapCardElement.classList.add('hidden');
@@ -124,6 +133,13 @@
   window.card = {
     closeCard: closeCard,
     openCard: openCard,
-    createCard: createCard
+    createCard: createCard,
+    setCardVisible : function (flag) {
+      if (flag) {
+        mapCardElement.classList.remove('hidden');
+      } else {
+        mapCardElement.classList.add('hidden');
+      }
+    }
   };
 })();

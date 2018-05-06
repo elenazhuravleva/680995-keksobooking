@@ -4,6 +4,7 @@
 
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
+var timeout;
 
 var successElement = document.querySelector('.success');
 
@@ -55,6 +56,13 @@ var createErrorMessage = function (message) {
       setTimeout(function () {
         document.body.removeChild(errorElement);
         }, 10000);
+    },
+
+    debounce: function (myfunction) {
+     if (timeout) {
+       window.clearTimeout(timeout);
+     }
+      timeout = window.setTimeout(myfunction, 300);
     }
   }
 })();

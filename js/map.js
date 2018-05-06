@@ -32,8 +32,9 @@ var mapPinLocationYLimits = {
 
 var mapPinMainTailLength = 22;
 
+window.map = {
   //Отрисовка сгенерированных DOM-элементов в блок
-  var createMapPins = function (parent, offer) {
+    createMapPins : function (parent, offer) {
     if(parent.querySelector('.map__pin--new')) {
     var childs = parent.querySelectorAll('.map__pin--new');
     childs.forEach(function(it) {
@@ -41,12 +42,15 @@ var mapPinMainTailLength = 22;
     })
     }
     for (var i = 0; i < offer.length; i++) {
-      docFragment.appendChild(window.pin.createMarkerForOffer(offer[i],i));
+      if (i=== 5 ) {
+        break;
+      }
+      var offerElement = offer[i];
+      docFragment.appendChild(window.pin.createMarkerForOffer(offerElement));
     }
     parent.appendChild(docFragment);
-    };
+    },
 
-    window.map = {
       setActivePage : function (status) {
     if (status) {
       map.classList.remove('map--faded');
@@ -56,14 +60,21 @@ var mapPinMainTailLength = 22;
       mapPinMainButton.style.top = mapPinMainButtonStartTop;
       map.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
-      createMapPins(mapPinsBlock,[]);
+      window.map.createMapPins(mapPinsBlock,[]);
       mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
       mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);
       }
       window.form.setFieldsetDisabled(!status);
       setAddressField();
       mapPinMainButton.addEventListener('mousedown',onMapPinMainButtonMousedown);
-    }
+    },
+
+      resetPins : function() {
+        var mapPins = mapPinsBlock.querySelectorAll('.map__pin:not(.map__pin--main)');
+        for (var i = 0; i < mapPins.length; i++) {
+          mapPinsBlock.removeChild(mapPins[i]);
+        }
+      }
   };
 
      //Поле адреса
@@ -116,7 +127,7 @@ var mapPinMainTailLength = 22;
     window.map.setActivePage(true);
     mouseClick = true;
     if ( mouseClick) {
-    createMapPins(mapPinsBlock,window.data.nearestOffers);}
+      window.map.createMapPins(mapPinsBlock,window.data.nearestOffers.slice(0, window.filter.offersNumber));}
     updateAddressField();
     window.form.onRoomsSelectorChange();
     window.form.onTypeSelectorChange();
@@ -126,7 +137,7 @@ var mapPinMainTailLength = 22;
 
    var onSuccess = function (response) {
     window.data.setData(response);
-    createMapPins(mapPinsBlock,window.data.nearestOffers);
+    window.map.createMapPins(mapPinsBlock,window.data.nearestOffers.slice(0, window.filter.offersNumber));
    };
 
    var onError = function (errorMessage) {
@@ -149,14 +160,12 @@ var mapPinMainTailLength = 22;
 
   var onMapPinsBlockCLick = function(evt) {
     var target = evt.target;
-    var currentPin;
     while (!target.classList.contains('map__pin') && target.parentElement !== null) {
       target = target.parentElement;
     }
-    currentPin = target.dataset.index;
-    if (isFinite(currentPin)) {
-        window.card.createCard(window.data.nearestOffers,currentPin);
-      }
+    if (target.dataset.offer) {
+      window.card.createCard(JSON.parse(target.dataset.offer));
+    }
   };
 
 
