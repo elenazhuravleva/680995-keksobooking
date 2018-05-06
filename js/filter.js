@@ -46,9 +46,11 @@
    };
 
   var resetFiltersDefaults = function () {
-    for (let key in filtersDefaults) {
+    for (var key in filtersDefaults) {
+      console.log('[name="'+ key +'"]');
       mapFilters.querySelector('[name="'+ key +'"]').value = filtersDefaults[key];
     }
+
     typeCheckboxSelect.forEach(function(checkbox) {
       checkbox.checked = false;
     });
@@ -66,7 +68,7 @@
     filterWasher.checked = false;
     filterWifi.checked = false;
 
-    resetFiltersDefaults();
+    //resetFiltersDefaults();
   };
 
 
@@ -150,7 +152,7 @@
   mapFilters.addEventListener('change', onMapFiltersChange);
 
   window.filter = {
-    offersNumber: offersNumber,
+   // offersNumber: offersNumber,
     updateFilter: updateFilter
   };
 
