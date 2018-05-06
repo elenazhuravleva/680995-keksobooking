@@ -126,6 +126,7 @@ var mapPinMainTailLength = 22;
 
    var onSuccess = function (response) {
     window.data.setData(response);
+    createMapPins(mapPinsBlock,window.data.nearestOffers);
    };
 
    var onError = function (errorMessage) {
@@ -135,7 +136,7 @@ var mapPinMainTailLength = 22;
     var onMapPinMainButtonMousedown = function(evt) {
     evt.preventDefault();
     window.map.setActivePage(true);
-    if (!window.data.dataLoad() && !window.backend.dataLoadingState) {
+    if (!window.data.dataLoad()) {
       window.backend.dataLoad (onSuccess, onError);
     }
     startCoords = {

@@ -22,7 +22,6 @@
     var image = parent.querySelector('img').cloneNode(true);
     image.src = photo;
     image.classList.remove('hidden');
-
     return image;
   };
 
@@ -68,6 +67,12 @@
       offerRoomsText += 'ы';
     }
 
+    // if (popupPhotosElement.querySelector('img')) {
+    // popupPhotosElement.querySelector('img').classList.add('hidden');
+    // popupPhotosElement.dataset.hasimage = 1;
+    // } else {
+    //   popupPhotosElement.dataset.hasimage = 0;
+    // }
     popupPhotosElement.querySelector('img').classList.add('hidden');
     mapCardElement.querySelector('.popup__title').textContent = inputOfferElement.offer.title;
     mapCardElement.querySelector('.popup__text--address').textContent = inputOfferElement.offer.address;
