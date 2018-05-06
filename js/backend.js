@@ -51,7 +51,8 @@ var URL = {
 
   window.backend = {
     dataLoad: dataLoad,
-    dataUpload: dataUpload
+    dataUpload: dataUpload,
+    dataLoadingState: dataLoadingState
   };
 
 })();

@@ -56,9 +56,9 @@ var mapPinMainTailLength = 22;
       mapPinMainButton.style.top = mapPinMainButtonStartTop;
       map.classList.add('map--faded');
       adForm.classList.add('ad-form--disabled');
-       createMapPins(mapPinsBlock,[]);
-       document.addEventListener('mouseup',onMapPinMainButtonMouseup);
-       mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);
+      createMapPins(mapPinsBlock,[]);
+      mapPinMainButton.addEventListener('mouseup',onMapPinMainButtonMouseup);
+      mapPinMainButton.removeEventListener('mousedown', onMapPinMainButtonMousedown);
       }
       window.form.setFieldsetDisabled(!status);
       setAddressField();
@@ -136,7 +136,7 @@ var mapPinMainTailLength = 22;
     var onMapPinMainButtonMousedown = function(evt) {
     evt.preventDefault();
     window.map.setActivePage(true);
-    if (!window.data.dataLoad()) {
+    if (!window.data.dataLoad() && !window.backend.dataLoadingState) {
       window.backend.dataLoad (onSuccess, onError);
     }
     startCoords = {
