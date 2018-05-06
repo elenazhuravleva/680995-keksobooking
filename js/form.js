@@ -102,6 +102,7 @@ for (let key in formDefaults) {
 typeCheckboxSelect.forEach(function(checkbox) {
   checkbox.checked = false;
 });
+window.filter.updateFilter();
 window.card.closeCard();
 window.map.setActivePage(false);
 clearErrors();
