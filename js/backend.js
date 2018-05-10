@@ -3,23 +3,27 @@
 
 (function () {
 
-var URL = {
+  var URL = {
     LOAD: 'https://js.dump.academy/keksobooking/data/',
     UPLOAD: 'https://js.dump.academy/keksobooking'
   };
 
+  var XHR_TIMEOUT = 10000;
+  var STATUS_OK = 200;
+  var STATUS_WRONG_REQUEST = 400;
+  var STATUS_NOTHING_FOUND = 404;
   var dataLoadingState = false;
 
   var xhrConfig = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_OK) {
         window.backend.dataLoadingState = false;
         onSuccess(xhr.response);
-      }  else if  (xhr.status === 400) {
+      } else if (xhr.status === STATUS_WRONG_REQUEST) {
         onError('неверный запрос');
-      } else if  (xhr.status === 404) {
+      } else if (xhr.status === STATUS_NOTHING_FOUND) {
         onError('ничего не найдено');
       } else {
         onError('Стастус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -35,11 +39,11 @@ var URL = {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 10000;
+    xhr.timeout = XHR_TIMEOUT;
     return xhr;
   };
 
-  //Функция получения данных с сервера
+  // Функция получения данных с сервера
   var dataLoad = function (onSuccess, onError) {
     window.backend.dataLoadingState = true;
     var xhr = xhrConfig(onSuccess, onError);
@@ -47,7 +51,7 @@ var URL = {
     xhr.send();
   };
 
-  //Функция для отправки данных на сервер
+  // Функция для отправки данных на сервер
   var dataUpload = function (data, onSuccess, onError) {
     var xhr = xhrConfig(onSuccess, onError);
     xhr.open('POST', URL.UPLOAD);
