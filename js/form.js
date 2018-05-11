@@ -17,7 +17,7 @@
   var titleSelector = adForm.querySelector('#title');
 
 
-  var FORM_DEFAULTS = {
+  var FormDefaults = {
     'title': '',
     'address': '',
     'type': 'flat',
@@ -37,7 +37,7 @@
   };
 
   var onRoomsSelectorChange = function () {
-    var ALLOWED_VARIANTS = {
+    var AllowedVariants = {
       '1': ['1'],
       '2': ['1', '2'],
       '3': ['1', '2', '3'],
@@ -46,7 +46,7 @@
     var rooms = roomsSelector.options[roomsSelector.selectedIndex].value;
     var capacity = capacitySelector.options;
     for (var i = 0; i < capacity.length; i++) {
-      if (ALLOWED_VARIANTS[rooms].indexOf(capacity[i].value) === -1) {
+      if (AllowedVariants[rooms].indexOf(capacity[i].value) === -1) {
         capacity[i].disabled = true;
         capacity[i].style.display = 'none';
       } else {
@@ -64,7 +64,7 @@
   };
 
   var onTypeSelectorChange = function () {
-    var ALLOWED_VARIANTS = {
+    var AllowedVariants = {
       'palace': 10000,
       'flat': 1000,
       'house': 5000,
@@ -72,7 +72,7 @@
     };
 
     var type = typeSelector.options[typeSelector.selectedIndex].value;
-    var minAllowedValue = ALLOWED_VARIANTS[type];
+    var minAllowedValue = AllowedVariants[type];
     priceSelector.placeholder = minAllowedValue;
     priceSelector.min = minAllowedValue;
   };
@@ -98,9 +98,9 @@
   // Кнопка "очистить" обновляет карту, данные полей обнуляет, закрывает активную карточку объявления
   var onResetFormClick = function () {
 
-    for (var key in FORM_DEFAULTS) {
+    for (var key in FormDefaults) {
       if (key !== '') {
-        adForm.querySelector('[name="' + key + '"]').value = FORM_DEFAULTS[key];
+        adForm.querySelector('[name="' + key + '"]').value = FormDefaults[key];
       }
     }
     typeCheckboxSelect.forEach(function (checkbox) {

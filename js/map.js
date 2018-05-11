@@ -13,16 +13,16 @@
   var mapPinMainButtonHeight = mapPinMainButton.querySelector('img').height;
   var mapPinMainButtonStartLeft = mapPinMainButton.style.left;
   var mapPinMainButtonStartTop = mapPinMainButton.style.top;
-  var startCoords = {};
+  var StartCoords = {};
   var mouseClick = false;
 
   // Пределы карты, за которые не должна вылезать главная метка
-  var MAP_PIN_LOCATION_X_LIMITS = {
+  var MapPinLocationXLimits = {
     MIN: 0,
     MAX: 1135
   };
 
-  var MAP_PIN_LOCATION_Y_LIMITS = {
+  var MapPinLocationYLimits = {
     MIN: 150,
     MAX: 625
   };
@@ -87,29 +87,29 @@
   var onMapPinMainButtonMousemove = function (evt) {
     evt.preventDefault();
 
-    var movement = {
-      x: startCoords.x - evt.clientX,
-      y: startCoords.y - evt.clientY
+    var Movement = {
+      x: StartCoords.x - evt.clientX,
+      y: StartCoords.y - evt.clientY
     };
 
-    startCoords = {
+    StartCoords = {
       x: evt.clientX,
       y: evt.clientY
     };
 
-    var finalTop = mapPinMainButton.offsetTop - movement.y;
-    var finalLeft = mapPinMainButton.offsetLeft - movement.x;
+    var finalTop = mapPinMainButton.offsetTop - Movement.y;
+    var finalLeft = mapPinMainButton.offsetLeft - Movement.x;
 
-    if (finalTop < MAP_PIN_LOCATION_Y_LIMITS.MIN) {
-      finalTop = MAP_PIN_LOCATION_Y_LIMITS.MIN;
-    } else if (finalTop > MAP_PIN_LOCATION_Y_LIMITS.MAX) {
-      finalTop = MAP_PIN_LOCATION_Y_LIMITS.MAX;
+    if (finalTop < MapPinLocationYLimits.MIN) {
+      finalTop = MapPinLocationYLimits.MIN;
+    } else if (finalTop > MapPinLocationYLimits.MAX) {
+      finalTop = MapPinLocationYLimits.MAX;
     }
 
-    if (finalLeft < MAP_PIN_LOCATION_X_LIMITS.MIN) {
-      finalLeft = MAP_PIN_LOCATION_X_LIMITS.MIN;
-    } else if (finalLeft > MAP_PIN_LOCATION_X_LIMITS.MAX) {
-      finalLeft = MAP_PIN_LOCATION_X_LIMITS.MAX;
+    if (finalLeft < MapPinLocationXLimits.MIN) {
+      finalLeft = MapPinLocationXLimits.MIN;
+    } else if (finalLeft > MapPinLocationXLimits.MAX) {
+      finalLeft = MapPinLocationXLimits.MAX;
     }
 
     mapPinMainButton.style.top = finalTop + 'px';
@@ -148,7 +148,7 @@
     if (!window.data.dataLoad() && !window.backend.dataLoadingState) {
       window.backend.dataLoad(onSuccess, onError);
     }
-    startCoords = {
+    StartCoords = {
       x: evt.clientX,
       y: evt.clientY
     };

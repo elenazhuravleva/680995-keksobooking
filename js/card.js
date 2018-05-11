@@ -3,7 +3,7 @@
 
 (function () {
 
-  var TYPE_TRANSLATE = {
+  var TypeTranslate = {
     'palace': 'Дворец',
     'flat': 'Квартира',
     'house': 'Дом',
@@ -93,7 +93,7 @@
     mapCardElement.querySelector('.popup__title').textContent = inputOfferElement.offer.title;
     mapCardElement.querySelector('.popup__text--address').textContent = inputOfferElement.offer.address;
     mapCardElement.querySelector('.popup__text--price').innerHTML = inputOfferElement.offer.price + '&#x20bd;<span>/ночь</span>';
-    mapCardElement.querySelector('.popup__type').textContent = TYPE_TRANSLATE[inputOfferElement.offer.type];
+    mapCardElement.querySelector('.popup__type').textContent = TypeTranslate[inputOfferElement.offer.type];
     mapCardElement.querySelector('.popup__text--capacity').textContent = offerRooms + offerRoomsText + ' для ' + offerGuests + offerGuestsText;
     mapCardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + inputOfferElement.offer.checkin + ', выезд до ' + inputOfferElement.offer.checkout;
     fillPopupFeatures(mapCardElement, inputOfferElement.offer.features);
@@ -144,7 +144,6 @@
 
   window.card = {
     closeCard: closeCard,
-    openCard: openCard,
     createCard: createCard,
     setCardVisible: function (flag) {
       if (flag) {

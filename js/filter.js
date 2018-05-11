@@ -9,7 +9,7 @@
   var housingType = mapFilters.querySelector('#housing-type');
   var housingPrice = mapFilters.querySelector('#housing-price');
   var housingRooms = mapFilters.querySelector('#housing-rooms');
-  var housinGuests = mapFilters.querySelector('#housing-guests');
+  var housingGuests = mapFilters.querySelector('#housing-guests');
   var featuresSelector = mapFilters.querySelector('.map__features');
   var filterWifiSelector = featuresSelector.querySelector('#filter-wifi');
   var filterDishwasherSelector = featuresSelector.querySelector('#filter-dishwasher');
@@ -19,14 +19,14 @@
   var filterConditionerSelector = featuresSelector.querySelector('#filter-conditioner');
 
 
-  var filtersDefaults = {
+  var FiltersDefaults = {
     'housing-type': 'any',
     'housing-price': 'any',
     'housing-rooms': 'any',
     'housing-guests': 'any'
   };
 
-  var filtersFeaturesDefaults = {
+  var FiltersFeaturesDefaults = {
     'filter-wifi': false,
     'filter-dishwasher': false,
     'filter-parking': false,
@@ -35,7 +35,7 @@
     'filter-conditioner': false
   };
 
-  var featuresClassListMap = {
+  var FeaturesClassListMap = {
     'filter-wifi': 'wifi',
     'filter-dishwasher': 'dishwasher',
     'filter-parking': 'parking',
@@ -49,7 +49,7 @@
     housingPrice.value = 'any';
     housingRooms.value = 'any';
     housingType.value = 'any';
-    housinGuests.value = 'any';
+    housingGuests.value = 'any';
     filterConditionerSelector.checked = false;
     filterDishwasherSelector.checked = false;
     filterElevatorSelector.checked = false;
@@ -64,7 +64,7 @@
     var MAX_PRICE = 50000;
     var priceValue = false;
 
-    switch (filtersDefaults['housing-price']) {
+    switch (FiltersDefaults['housing-price']) {
       case 'any':
         priceValue = true;
         break;
@@ -82,10 +82,10 @@
   };
 
   var checkFilterCheckbox = function (el, feature) {
-    return !filtersFeaturesDefaults[feature] ||
-      (filtersFeaturesDefaults[feature] &&
+    return !FiltersFeaturesDefaults[feature] ||
+      (FiltersFeaturesDefaults[feature] &&
         el.offer.features &&
-        el.offer.features.indexOf(featuresClassListMap[feature]) !== -1);
+        el.offer.features.indexOf(FeaturesClassListMap[feature]) !== -1);
   };
 
   var tryFilter = function (element, feature, featureValue, isNumber) {
@@ -93,11 +93,11 @@
   };
 
   var setFilterOnOffers = function (element) {
-    var filterType = tryFilter(element, 'type', filtersDefaults['housing-type'], false);
+    var filterType = tryFilter(element, 'type', FiltersDefaults['housing-type'], false);
     var filterPrice = filterForHousingPrice(element.offer.price);
 
-    var filterRooms = tryFilter(element, 'rooms', filtersDefaults['housing-rooms'], true);
-    var filterGuests = tryFilter(element, 'guests', filtersDefaults['housing-guests'], true);
+    var filterRooms = tryFilter(element, 'rooms', FiltersDefaults['housing-rooms'], true);
+    var filterGuests = tryFilter(element, 'guests', FiltersDefaults['housing-guests'], true);
 
     var filterWifi = checkFilterCheckbox(element, 'filter-wifi');
     var filterDishwasher = checkFilterCheckbox(element, 'filter-dishwasher');
@@ -130,8 +130,8 @@
       } else {
         value = element.value;
       }
-      filtersDefaults[element.id] = value;
-      filtersFeaturesDefaults[element.id] = value;
+      FiltersDefaults[element.id] = value;
+      FiltersFeaturesDefaults[element.id] = value;
       window.map.resetPins();
       window.util.debounce(resetOffers);
     }
